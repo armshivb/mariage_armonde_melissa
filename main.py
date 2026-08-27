@@ -231,53 +231,33 @@ def index_post(request: Request, recherche: str = Form(...), db: Session = Depen
                 guest = db.query(Guest).filter(
                     Guest.nom.ilike(parts[0]), Guest.prenom.ilike(" ".join(parts[1:]))
                 ).first()
+    
+    # Si l'invité n'existe pas, le créer automatiquement
     if not guest:
-        return tr("index.html", request,
-                  error="Passager non trouvé sur ce vol. Vérifiez votre prénom, nom ou numéro de téléphone.")
+        parts = q.split()
+        if len(parts) >= 1:
+            prenom = parts[0].strip()
+            nom = " ".join(parts[1:]).strip() if len(parts) > 1 else ""
+            
+            if prenom and nom:
+                # Créer automatiquement
+                code = generate_unique_code(db)
+                guest = Guest(
+                    prenom=prenom,
+                    nom=nom,
+                    code=code,
+                    created_at=datetime.utcnow()
+                )
+                db.add(guest)
+                db.commit()
+            else:
+                return tr("index.html", request,
+                          error="Veuillez entrer un prénom ET un nom de famille.")
+        else:
+            return tr("index.html", request,
+                      error="Veuillez entrer un prénom ET un nom de famille.")
+    
     return RedirectResponse(f"/rsvp/{guest.code}", status_code=302)
-
-
-# ── Auto-enregistrement / Créer un invité ──────────────────────────────────────
-@app.get("/register", response_class=HTMLResponse)
-def register_get(request: Request):
-    return tr("register.html", request)
-
-
-@app.post("/register", response_class=HTMLResponse)
-def register_post(request: Request, prenom: str = Form(...), nom: str = Form(...), 
-                  db: Session = Depends(get_db)):
-    prenom = prenom.strip()
-    nom = nom.strip()
-    
-    if not prenom or not nom:
-        return tr("register.html", request, 
-                  error="Le prénom et le nom sont obligatoires.")
-    
-    # Vérifier si l'invité existe déjà
-    existing = db.query(Guest).filter(
-        Guest.prenom.ilike(prenom), 
-        Guest.nom.ilike(nom)
-    ).first()
-    
-    if existing:
-        return tr("register.html", request,
-                  error=f"Un invité portant ce nom existe déjà avec le code: {existing.code}",
-                  existing_code=existing.code)
-    
-    # Créer un nouvel invité
-    code = generate_unique_code(db)
-    new_guest = Guest(
-        prenom=prenom,
-        nom=nom,
-        code=code,
-        created_at=datetime.utcnow()
-    )
-    db.add(new_guest)
-    db.commit()
-    
-    return tr("register_success.html", request, 
-              guest=new_guest, 
-              seat=get_seat(new_guest.code))
 
 
 # ── Page RSVP / Boarding pass ──────────────────────────────────────────────────
