@@ -171,6 +171,14 @@ def get_seat(code: str) -> str:
     return f"{row}{col}"
 
 
+def generate_unique_code(db: Session) -> str:
+    """Génère un code unique et non utilisé."""
+    code = secrets.token_hex(3).upper()
+    while db.query(Guest).filter(Guest.code == code).first():
+        code = secrets.token_hex(3).upper()
+    return code
+
+
 @app.on_event("startup")
 def startup():
     init_db()
@@ -227,6 +235,49 @@ def index_post(request: Request, recherche: str = Form(...), db: Session = Depen
         return tr("index.html", request,
                   error="Passager non trouvé sur ce vol. Vérifiez votre prénom, nom ou numéro de téléphone.")
     return RedirectResponse(f"/rsvp/{guest.code}", status_code=302)
+
+
+# ── Auto-enregistrement / Créer un invité ──────────────────────────────────────
+@app.get("/register", response_class=HTMLResponse)
+def register_get(request: Request):
+    return tr("register.html", request)
+
+
+@app.post("/register", response_class=HTMLResponse)
+def register_post(request: Request, prenom: str = Form(...), nom: str = Form(...), 
+                  db: Session = Depends(get_db)):
+    prenom = prenom.strip()
+    nom = nom.strip()
+    
+    if not prenom or not nom:
+        return tr("register.html", request, 
+                  error="Le prénom et le nom sont obligatoires.")
+    
+    # Vérifier si l'invité existe déjà
+    existing = db.query(Guest).filter(
+        Guest.prenom.ilike(prenom), 
+        Guest.nom.ilike(nom)
+    ).first()
+    
+    if existing:
+        return tr("register.html", request,
+                  error=f"Un invité portant ce nom existe déjà avec le code: {existing.code}",
+                  existing_code=existing.code)
+    
+    # Créer un nouvel invité
+    code = generate_unique_code(db)
+    new_guest = Guest(
+        prenom=prenom,
+        nom=nom,
+        code=code,
+        created_at=datetime.utcnow()
+    )
+    db.add(new_guest)
+    db.commit()
+    
+    return tr("register_success.html", request, 
+              guest=new_guest, 
+              seat=get_seat(new_guest.code))
 
 
 # ── Page RSVP / Boarding pass ──────────────────────────────────────────────────
@@ -322,9 +373,7 @@ def add_guest(
     prenom: str = Form(...), nom: str = Form(...),
     telephone: str = Form(""), db: Session = Depends(get_db)
 ):
-    code = secrets.token_hex(3).upper()
-    while db.query(Guest).filter(Guest.code == code).first():
-        code = secrets.token_hex(3).upper()
+    code = generate_unique_code(db)
     db.add(Guest(prenom=prenom.strip(), nom=nom.strip(),
                  telephone=telephone.strip(), code=code))
     db.commit()
@@ -346,9 +395,7 @@ async def import_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
         tel    = row[2].strip() if len(row) > 2 else ""
         if not prenom and not nom:
             continue
-        code = secrets.token_hex(3).upper()
-        while db.query(Guest).filter(Guest.code == code).first():
-            code = secrets.token_hex(3).upper()
+        code = generate_unique_code(db)
         db.add(Guest(prenom=prenom, nom=nom, telephone=tel, code=code))
         added += 1
     db.commit()

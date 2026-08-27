@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="hero-monogram">
+      <span class="mono-letter">M</span>
+      <span class="mono-amp">&amp;</span>
+      <span class="mono-letter">A</span>
+    </div>
+    <div class="hero-leaves">
+      ❧ &nbsp; ✦ &nbsp; ❧
+    </div>
+    <p class="hero-subtitle">Bienvenue à bord !</p>
+    <h1 class="hero-title">Profil créé avec succès</h1>
+    <p class="hero-script">Voici votre code d'embarquement personnel</p>
+    <div style="margin-top:1rem">
+      <span class="hero-info">{{ date }} &nbsp;·&nbsp; {{ place }}</span>
+    </div>
+    <div class="hero-divider"></div>
+  </div>
+</section>
+
+<section class="checkin-section">
+  <div class="checkin-grid">
+    <div class="card card-checkin">
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem">
+        <span style="font-size:2rem">✅</span>
+        <div>
+          <h2>Bienvenue {{ guest.prenom }} !</h2>
+          <p class="card-sub">Votre enregistrement est confirmé</p>
+        </div>
+      </div>
+
+      <div class="alert-info" style="margin-bottom:1.5rem;text-align:center">
+        <p style="margin:0;font-size:.9rem">Votre code d'accès personnel :</p>
+        <p style="margin:1rem 0 0;font-family:var(--mono);font-size:2.5rem;letter-spacing:.15em;font-weight:bold;color:var(--accent)">
+          {{ guest.code }}
+        </p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;text-align:center">
+        <p style="font-size:.8rem;color:var(--mid);margin:0 0 .5rem;font-family:var(--mono);letter-spacing:.04em">
+          Numéro de siège
+        </p>
+        <p style="font-size:2rem;font-weight:bold;color:var(--dark);margin:0;font-family:var(--mono)">
+          {{ seat }}
+        </p>
+      </div>
+
+      <p style="font-size:.85rem;color:var(--mid);margin-bottom:1rem;line-height:1.6;text-align:center">
+        ℹ️ Conservez ce code, vous en aurez besoin pour accéder à votre carte d'embarquement et confirmer votre présence.
+      </p>
+
+      <a href="/rsvp/{{ guest.code }}" class="btn-primary" style="display:block;text-align:center;margin-bottom:1rem">
+        ✈ &nbsp; Accéder à mon enregistrement
+      </a>
+
+      <a href="/" class="btn-secondary" style="display:block;text-align:center">
+        ← Retour à l'accueil
+      </a>
+
+      <hr class="divider" style="margin:1.5rem 0" />
+
+      <div style="background:#FFF5F2;border-radius:var(--radius);padding:1rem;border-left:4px solid #E8735C;margin:0">
+        <p style="font-size:.75rem;color:var(--mid);margin:0;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase">
+          💡 Astuce
+        </p>
+        <p style="font-size:.85rem;color:var(--dark);margin:.5rem 0 0;line-height:1.6">
+          Vous pouvez partager ce code avec d'autres invités, mais chacun devra s'enregistrer individuellement avec ses propres nom et prénom.
+        </p>
+      </div>
+    </div>
+
+    <!-- Sidebar : Détails du vol -->
+    <div class="card-flight-details">
+      <h3>✈ Détails du vol</h3>
+
+      <div class="detail-row">
+        <span class="detail-icon">📅</span>
+        <div>
+          <div class="detail-label">Date</div>
+          <div class="detail-value">{{ date }}</div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">🕐</span>
+        <div>
+          <div class="detail-label">Heure d'embarquement</div>
+          <div class="detail-value">{{ hour }}</div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">📍</span>
+        <div>
+          <div class="detail-label">Lieu de départ</div>
+          <div class="detail-value">Habitation Beau Pays</div>
+          <div class="detail-sub">60 boulevard du bord de mer, Petite Anse<br>Le Carbet 97221, Martinique</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="detail-row">
+        <span class="detail-icon">🛫</span>
+        <div>
+          <div class="detail-label">Vol</div>
+          <div class="detail-value">{{ flight_num }}</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="detail-row">
+        <span class="detail-icon">🌺</span>
+        <div>
+          <div class="detail-label">Classe</div>
+          <span class="classe-badge">Première Classe</span>
+          <div class="detail-sub" style="margin-top:.4rem">Célébration · Dîner · Soirée</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <div style="text-align:center;font-size:.85rem;color:#9A7060;font-style:italic;line-height:1.6;font-family:'Great Vibes',cursive;font-size:1.1rem">
+        Nous avons hâte de voyager avec vous !
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.btn-secondary {
+  background: var(--light) !important;
+  color: var(--accent) !important;
+  border: 1.5px solid var(--accent-light) !important;
+  font-weight: 600;
+  padding: .55rem 1rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.btn-secondary:hover {
+  background: var(--accent) !important;
+  color: white !important;
+}
+
+.alert-info {
+  background: #E8F4FE;
+  border-left: 4px solid #0084D4;
+  padding: 1rem;
+  border-radius: var(--radius);
+  color: #003D82;
+}
+</style>
+
+{% endblock %}

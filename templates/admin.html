@@ -128,6 +128,7 @@
             <th>Code</th>
             <th>Réponse</th>
             <th>Message</th>
+            <th>Créé le</th>
             <th>Mis à jour</th>
             <th></th>
           </tr>
@@ -150,6 +151,9 @@
             </td>
             <td class="msg-cell" title="{{ g.message or '' }}">{{ g.message or "–" }}</td>
             <td style="font-family:var(--mono);font-size:.78rem;white-space:nowrap">
+              {{ g.created_at.strftime("%d/%m %H:%M") if g.created_at else "–" }}
+            </td>
+            <td style="font-family:var(--mono);font-size:.78rem;white-space:nowrap">
               {{ g.updated_at.strftime("%d/%m %H:%M") if g.updated_at else "–" }}
             </td>
             <td>
@@ -160,7 +164,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="8" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">
+          <tr><td colspan="9" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">
             Aucun passager enregistré pour l'instant.
           </td></tr>
           {% endfor %}
