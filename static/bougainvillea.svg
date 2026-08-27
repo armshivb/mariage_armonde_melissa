@@ -1,0 +1,415 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 580" preserveAspectRatio="xMidYMid slice">
+  <defs>
+
+    <!-- ── Filtres ── -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="rgba(80,10,30,0.18)"/>
+    </filter>
+    <filter id="shadow-sm">
+      <feDropShadow dx="0.5" dy="1" stdDeviation="1.2" flood-color="rgba(80,10,30,0.12)"/>
+    </filter>
+    <filter id="blur-bg">
+      <feGaussianBlur stdDeviation="1.2"/>
+    </filter>
+
+    <!-- ── Dégradés bractées ── -->
+    <!-- Rose vif / chaud -->
+    <radialGradient id="gp1" cx="35%" cy="25%" r="65%">
+      <stop offset="0%"   stop-color="#F570AA"/>
+      <stop offset="45%"  stop-color="#E02878"/>
+      <stop offset="100%" stop-color="#A81050"/>
+    </radialGradient>
+    <!-- Magenta profond -->
+    <radialGradient id="gp2" cx="40%" cy="20%" r="60%">
+      <stop offset="0%"   stop-color="#E848A0"/>
+      <stop offset="50%"  stop-color="#C01870"/>
+      <stop offset="100%" stop-color="#880848"/>
+    </radialGradient>
+    <!-- Corail rosé -->
+    <radialGradient id="gc1" cx="35%" cy="30%" r="65%">
+      <stop offset="0%"   stop-color="#F08878"/>
+      <stop offset="50%"  stop-color="#D85040"/>
+      <stop offset="100%" stop-color="#A83020"/>
+    </radialGradient>
+    <!-- Rose pâle / saumon -->
+    <radialGradient id="gpl" cx="30%" cy="25%" r="65%">
+      <stop offset="0%"   stop-color="#FBBAD8"/>
+      <stop offset="55%"  stop-color="#E880B0"/>
+      <stop offset="100%" stop-color="#C05888"/>
+    </radialGradient>
+    <!-- Rouge cramoisi -->
+    <radialGradient id="gcr" cx="40%" cy="30%" r="60%">
+      <stop offset="0%"   stop-color="#E84070"/>
+      <stop offset="55%"  stop-color="#B81848"/>
+      <stop offset="100%" stop-color="#800830"/>
+    </radialGradient>
+    <!-- Orange corail -->
+    <radialGradient id="gor" cx="35%" cy="25%" r="65%">
+      <stop offset="0%"   stop-color="#F5A060"/>
+      <stop offset="50%"  stop-color="#E06030"/>
+      <stop offset="100%" stop-color="#B03810"/>
+    </radialGradient>
+    <!-- Surbrillance nervure centrale -->
+    <linearGradient id="gvein" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%"   stop-color="rgba(255,255,255,0.55)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <!-- Feuille verte -->
+    <radialGradient id="gleaf" cx="40%" cy="30%" r="65%">
+      <stop offset="0%"   stop-color="#82B840"/>
+      <stop offset="60%"  stop-color="#4A8028"/>
+      <stop offset="100%" stop-color="#2A5010"/>
+    </radialGradient>
+    <!-- Nervure feuille -->
+    <linearGradient id="gleafv" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%"   stop-color="rgba(200,255,150,0.4)"/>
+      <stop offset="100%" stop-color="rgba(200,255,150,0)"/>
+    </linearGradient>
+    <!-- Tige/branche -->
+    <linearGradient id="gstem" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#6A4820"/>
+      <stop offset="100%" stop-color="#4A3010"/>
+    </linearGradient>
+
+    <!-- ════════════════════════════════════════
+         SYMBOLES RÉUTILISABLES
+         ════════════════════════════════════════ -->
+
+    <!-- Bractée réaliste (forme ovale pointue, nervures) -->
+    <!-- La bractée est orientée pointe en haut, base en bas -->
+    <symbol id="bract" viewBox="-18 -48 36 56" overflow="visible">
+      <!-- Corps de la bractée : forme ovoïde naturelle avec légère asymétrie -->
+      <path d="
+        M 0,7
+        C -4,4 -12,-2 -15,-14
+        C -18,-26 -14,-38 -6,-44
+        C -3,-47 0,-48 0,-48
+        C 0,-48 3,-47 6,-44
+        C 14,-38 18,-26 15,-14
+        C 12,-2 4,4 0,7 Z
+      " fill="url(#GRAD)" filter="url(#shadow-sm)"/>
+      <!-- Nervure centrale -->
+      <path d="M 0,6 Q 0,-20 0,-46" stroke="url(#gvein)" stroke-width="1.2" fill="none" opacity=".7"/>
+      <!-- Nervures secondaires -->
+      <path d="
+        M 0,-12 Q -9,-20 -12,-18
+        M 0,-12 Q  9,-20  12,-18
+        M 0,-22 Q -9,-30 -11,-28
+        M 0,-22 Q  9,-30  11,-28
+        M 0,-32 Q -7,-38  -8,-37
+        M 0,-32 Q  7,-38   8,-37
+      " stroke="rgba(255,255,255,0.28)" stroke-width=".7" fill="none"/>
+      <!-- Reflet papyracé -->
+      <path d="
+        M -2,5 C -5,2 -10,-4 -11,-15 C -12,-24 -9,-35 -3,-42
+      " stroke="rgba(255,255,255,0.22)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Feuille verte réaliste -->
+    <symbol id="leaf" viewBox="-14 -40 28 46" overflow="visible">
+      <path d="
+        M 0,5
+        C -3,2 -10,-4 -12,-16
+        C -14,-27 -10,-36 -4,-40
+        C -2,-41 0,-42 0,-42
+        C 0,-42 2,-41 4,-40
+        C 10,-36 14,-27 12,-16
+        C 10,-4 3,2 0,5 Z
+      " fill="url(#gleaf)"/>
+      <path d="M 0,4 Q 0,-18 0,-40" stroke="url(#gleafv)" stroke-width="1" fill="none" opacity=".6"/>
+      <path d="
+        M 0,-10 Q -7,-18 -9,-17
+        M 0,-10 Q  7,-18  9,-17
+        M 0,-20 Q -7,-28 -8,-27
+        M 0,-20 Q  7,-28  8,-27
+        M 0,-30 Q -5,-36 -6,-35
+        M 0,-30 Q  5,-36  6,-35
+      " stroke="rgba(200,255,150,0.25)" stroke-width=".6" fill="none"/>
+    </symbol>
+
+    <!-- Petite fleur tubulaire centrale (3 tubes blancs) -->
+    <symbol id="center" viewBox="-8 -14 16 16" overflow="visible">
+      <g transform="rotate(0)">
+        <ellipse cx="0" cy="-7" rx="1.8" ry="4" fill="#FFFDE8"/>
+        <circle  cx="0" cy="-11" r="2.2" fill="#FFF8B0"/>
+      </g>
+      <g transform="rotate(120)">
+        <ellipse cx="0" cy="-7" rx="1.8" ry="4" fill="#FFFDE8"/>
+        <circle  cx="0" cy="-11" r="2.2" fill="#FFF8B0"/>
+      </g>
+      <g transform="rotate(240)">
+        <ellipse cx="0" cy="-7" rx="1.8" ry="4" fill="#FFFDE8"/>
+        <circle  cx="0" cy="-11" r="2.2" fill="#FFF8B0"/>
+      </g>
+      <circle cx="0" cy="0" r="3" fill="#F0E060"/>
+    </symbol>
+
+    <!-- ════ CLUSTER COMPLET (3 bractées + centre) ════ -->
+    <!-- On définit 5 variantes de couleur -->
+
+    <!-- Rose vif -->
+    <symbol id="clust-pink" overflow="visible">
+      <g transform="rotate(-15) translate(0,-2)">
+        <use href="#bract" style="--GRAD:url(#gp1)"/>
+        <!-- hack: on remet la bonne couleur via fill direct -->
+      </g>
+      <!-- Bractée 1 : rotate 0 -->
+      <g transform="rotate(0) translate(0,0)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp1)" filter="url(#shadow-sm)" opacity=".95"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.5)" stroke-width="1.1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-22 Q -9,-30 -11,-28 M 0,-22 Q 9,-30 11,-28 M 0,-32 Q -7,-38 -8,-37 M 0,-32 Q 7,-38 8,-37"
+              stroke="rgba(255,255,255,0.25)" stroke-width=".7" fill="none"/>
+        <path d="M -2,5 C -5,2 -10,-4 -11,-15 C -12,-24 -9,-35 -3,-42" stroke="rgba(255,255,255,0.2)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- Bractée 2 -->
+      <g transform="rotate(120) translate(0,0)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp2)" filter="url(#shadow-sm)" opacity=".92"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.4)" stroke-width="1.1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-22 Q -9,-30 -11,-28 M 0,-22 Q 9,-30 11,-28"
+              stroke="rgba(255,255,255,0.22)" stroke-width=".7" fill="none"/>
+      </g>
+      <!-- Bractée 3 -->
+      <g transform="rotate(240) translate(0,0)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gcr)" filter="url(#shadow-sm)" opacity=".88"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.35)" stroke-width="1.1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-22 Q -9,-30 -11,-28 M 0,-22 Q 9,-30 11,-28"
+              stroke="rgba(255,255,255,0.2)" stroke-width=".7" fill="none"/>
+      </g>
+      <use href="#center" transform="scale(0.9)"/>
+    </symbol>
+
+    <!-- Corail -->
+    <symbol id="clust-coral" overflow="visible">
+      <g transform="rotate(15)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gc1)" filter="url(#shadow-sm)" opacity=".95"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.45)" stroke-width="1.1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30"
+              stroke="rgba(255,255,255,0.22)" stroke-width=".7" fill="none"/>
+      </g>
+      <g transform="rotate(135)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gor)" filter="url(#shadow-sm)" opacity=".9"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.4)" stroke-width="1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30"
+              stroke="rgba(255,255,255,0.2)" stroke-width=".7" fill="none"/>
+      </g>
+      <g transform="rotate(255)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp1)" filter="url(#shadow-sm)" opacity=".85"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.35)" stroke-width="1" fill="none"/>
+      </g>
+      <use href="#center" transform="scale(0.85)"/>
+    </symbol>
+
+    <!-- Magenta -->
+    <symbol id="clust-magenta" overflow="visible">
+      <g transform="rotate(-20)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp2)" filter="url(#shadow-sm)" opacity=".95"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30 M 0,-33 Q -6,-39 -7,-38 M 0,-33 Q 6,-39 7,-38"
+              stroke="rgba(255,255,255,0.28)" stroke-width=".7" fill="none"/>
+        <path d="M -3,5 C -6,2 -12,-5 -13,-16 C -14,-26 -11,-37 -5,-43" stroke="rgba(255,255,255,0.18)" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+      <g transform="rotate(100)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gcr)" filter="url(#shadow-sm)" opacity=".9"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.42)" stroke-width="1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30"
+              stroke="rgba(255,255,255,0.22)" stroke-width=".65" fill="none"/>
+      </g>
+      <g transform="rotate(220)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gpl)" filter="url(#shadow-sm)" opacity=".85"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.38)" stroke-width="1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30"
+              stroke="rgba(255,255,255,0.2)" stroke-width=".65" fill="none"/>
+      </g>
+      <use href="#center" transform="scale(0.88)"/>
+    </symbol>
+
+    <!-- Rose pâle -->
+    <symbol id="clust-light" overflow="visible">
+      <g transform="rotate(5)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gpl)" filter="url(#shadow-sm)" opacity=".92"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.55)" stroke-width="1.2" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-24 Q -9,-32 -11,-30 M 0,-24 Q 9,-32 11,-30"
+              stroke="rgba(255,255,255,0.3)" stroke-width=".7" fill="none"/>
+      </g>
+      <g transform="rotate(125)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp1)" filter="url(#shadow-sm)" opacity=".88"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.45)" stroke-width="1" fill="none"/>
+        <path d="M 0,-12 Q -9,-20 -12,-18 M 0,-12 Q 9,-20 12,-18 M 0,-22 Q -9,-30 -11,-28 M 0,-22 Q 9,-30 11,-28"
+              stroke="rgba(255,255,255,0.22)" stroke-width=".65" fill="none"/>
+      </g>
+      <g transform="rotate(245)">
+        <path d="M 0,7 C -4,4 -12,-2 -15,-14 C -18,-26 -14,-38 -6,-44 C -3,-47 0,-48 0,-48 C 0,-48 3,-47 6,-44 C 14,-38 18,-26 15,-14 C 12,-2 4,4 0,7 Z"
+              fill="url(#gp2)" filter="url(#shadow-sm)" opacity=".82"/>
+        <path d="M 0,6 Q 0,-20 0,-46" stroke="rgba(255,255,255,0.38)" stroke-width="1" fill="none"/>
+      </g>
+      <use href="#center" transform="scale(0.82)"/>
+    </symbol>
+
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TIGES / BRANCHES
+       ═══════════════════════════════════════════════════════════ -->
+  <!-- Branches gauche -->
+  <path d="M 0,580 C 30,450 60,350 80,200 C 90,130 100,70 130,20" stroke="#6A4820" stroke-width="4" fill="none" opacity=".5"/>
+  <path d="M 20,580 C 50,480 90,380 110,260 C 125,180 140,100 160,40" stroke="#5A3A18" stroke-width="3" fill="none" opacity=".4"/>
+  <path d="M 60,580 C 100,480 150,380 160,280 C 170,200 175,130 190,60" stroke="#6A4820" stroke-width="2.5" fill="none" opacity=".35"/>
+  <!-- Petites branches gauche -->
+  <path d="M 80,200 C 130,170 190,150 240,140" stroke="#5A3A18" stroke-width="2" fill="none" opacity=".3"/>
+  <path d="M 110,320 C 155,295 200,280 250,270" stroke="#5A3A18" stroke-width="1.8" fill="none" opacity=".28"/>
+  <path d="M 90,440 C 135,420 175,405 220,400" stroke="#5A3A18" stroke-width="1.5" fill="none" opacity=".25"/>
+
+  <!-- Branches droite -->
+  <path d="M 1400,580 C 1370,450 1340,350 1320,200 C 1310,130 1300,70 1270,20" stroke="#6A4820" stroke-width="4" fill="none" opacity=".5"/>
+  <path d="M 1380,580 C 1350,480 1310,380 1290,260 C 1275,180 1260,100 1240,40" stroke="#5A3A18" stroke-width="3" fill="none" opacity=".4"/>
+  <path d="M 1340,580 C 1300,480 1250,380 1240,280 C 1230,200 1225,130 1210,60" stroke="#6A4820" stroke-width="2.5" fill="none" opacity=".35"/>
+  <!-- Petites branches droite -->
+  <path d="M 1320,200 C 1270,170 1210,150 1160,140" stroke="#5A3A18" stroke-width="2" fill="none" opacity=".3"/>
+  <path d="M 1290,320 C 1245,295 1200,280 1150,270" stroke="#5A3A18" stroke-width="1.8" fill="none" opacity=".28"/>
+  <path d="M 1310,440 C 1265,420 1225,405 1180,400" stroke="#5A3A18" stroke-width="1.5" fill="none" opacity=".25"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FEUILLES VERTES
+       ═══════════════════════════════════════════════════════════ -->
+  <!-- Gauche -->
+  <g transform="translate(50,180) rotate(-30) scale(1.6)"><use href="#leaf"/></g>
+  <g transform="translate(85,140) rotate(20) scale(1.4)"><use href="#leaf"/></g>
+  <g transform="translate(25,300) rotate(-15) scale(1.5)"><use href="#leaf"/></g>
+  <g transform="translate(115,270) rotate(35) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(60,420) rotate(-25) scale(1.4)"><use href="#leaf"/></g>
+  <g transform="translate(145,390) rotate(15) scale(1.2)"><use href="#leaf"/></g>
+  <g transform="translate(30,510) rotate(-10) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(185,460) rotate(28) scale(1.1)"><use href="#leaf"/></g>
+  <g transform="translate(110,100) rotate(-40) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(170,200) rotate(22) scale(1.1)"><use href="#leaf"/></g>
+  <g transform="translate(205,330) rotate(-18) scale(1.0)"><use href="#leaf"/></g>
+
+  <!-- Droite -->
+  <g transform="translate(1350,180) rotate(30) scale(1.6)"><use href="#leaf"/></g>
+  <g transform="translate(1315,140) rotate(-20) scale(1.4)"><use href="#leaf"/></g>
+  <g transform="translate(1375,300) rotate(15) scale(1.5)"><use href="#leaf"/></g>
+  <g transform="translate(1285,270) rotate(-35) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(1340,420) rotate(25) scale(1.4)"><use href="#leaf"/></g>
+  <g transform="translate(1255,390) rotate(-15) scale(1.2)"><use href="#leaf"/></g>
+  <g transform="translate(1370,510) rotate(10) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(1215,460) rotate(-28) scale(1.1)"><use href="#leaf"/></g>
+  <g transform="translate(1290,100) rotate(40) scale(1.3)"><use href="#leaf"/></g>
+  <g transform="translate(1230,200) rotate(-22) scale(1.1)"><use href="#leaf"/></g>
+  <g transform="translate(1195,330) rotate(18) scale(1.0)"><use href="#leaf"/></g>
+
+  <!-- Haut centre -->
+  <g transform="translate(500,30) rotate(-10) scale(1.2)"><use href="#leaf"/></g>
+  <g transform="translate(700,20) rotate(5) scale(1.1)"><use href="#leaf"/></g>
+  <g transform="translate(900,30) rotate(-5) scale(1.2)"><use href="#leaf"/></g>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CLUSTERS — CÔTÉ GAUCHE (dense, du haut vers le bas)
+       ═══════════════════════════════════════════════════════════ -->
+  <!-- Rangée haute gauche -->
+  <g transform="translate(45,55) scale(1.8) rotate(-8)">  <use href="#clust-pink"/></g>
+  <g transform="translate(100,25) scale(1.6) rotate(12)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(155,50) scale(1.5) rotate(-5)"> <use href="#clust-coral"/></g>
+  <g transform="translate(30,110) scale(1.7) rotate(15)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(95,90) scale(1.5) rotate(-18)"> <use href="#clust-pink"/></g>
+  <g transform="translate(170,85) scale(1.4) rotate(8)">  <use href="#clust-light"/></g>
+  <g transform="translate(210,45) scale(1.3) rotate(-12)"><use href="#clust-coral"/></g>
+
+  <!-- Rangée milieu-haut gauche -->
+  <g transform="translate(20,175) scale(1.7) rotate(-6)"> <use href="#clust-coral"/></g>
+  <g transform="translate(80,155) scale(1.5) rotate(20)"> <use href="#clust-pink"/></g>
+  <g transform="translate(145,170) scale(1.4) rotate(-14)"><use href="#clust-magenta"/></g>
+  <g transform="translate(205,155) scale(1.3) rotate(10)"> <use href="#clust-light"/></g>
+  <g transform="translate(55,230) scale(1.6) rotate(8)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(120,215) scale(1.45) rotate(-20)"><use href="#clust-pink"/></g>
+  <g transform="translate(185,225) scale(1.3) rotate(15)"> <use href="#clust-coral"/></g>
+
+  <!-- Rangée milieu gauche -->
+  <g transform="translate(25,290) scale(1.55) rotate(-10)"><use href="#clust-pink"/></g>
+  <g transform="translate(90,275) scale(1.4) rotate(18)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(160,285) scale(1.3) rotate(-8)"> <use href="#clust-light"/></g>
+  <g transform="translate(215,265) scale(1.2) rotate(12)"> <use href="#clust-coral"/></g>
+  <g transform="translate(50,350) scale(1.45) rotate(5)">  <use href="#clust-coral"/></g>
+  <g transform="translate(120,340) scale(1.35) rotate(-22)"><use href="#clust-pink"/></g>
+  <g transform="translate(185,350) scale(1.2) rotate(14)"> <use href="#clust-magenta"/></g>
+
+  <!-- Rangée milieu-bas gauche -->
+  <g transform="translate(30,410) scale(1.4) rotate(-12)"> <use href="#clust-light"/></g>
+  <g transform="translate(95,400) scale(1.3) rotate(20)">  <use href="#clust-pink"/></g>
+  <g transform="translate(160,415) scale(1.2) rotate(-6)"> <use href="#clust-coral"/></g>
+  <g transform="translate(215,395) scale(1.1) rotate(10)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(55,470) scale(1.35) rotate(8)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(125,460) scale(1.25) rotate(-18)"><use href="#clust-pink"/></g>
+  <g transform="translate(190,470) scale(1.1) rotate(15)"> <use href="#clust-light"/></g>
+
+  <!-- Rangée basse gauche -->
+  <g transform="translate(30,525) scale(1.3) rotate(-5)">  <use href="#clust-pink"/></g>
+  <g transform="translate(95,515) scale(1.2) rotate(22)">  <use href="#clust-coral"/></g>
+  <g transform="translate(165,525) scale(1.1) rotate(-10)"><use href="#clust-magenta"/></g>
+  <g transform="translate(220,510) scale(1.0) rotate(8)">  <use href="#clust-light"/></g>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CLUSTERS — CÔTÉ DROIT (miroir)
+       ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(1355,55) scale(1.8) rotate(8)">  <use href="#clust-pink"/></g>
+  <g transform="translate(1300,25) scale(1.6) rotate(-12)"><use href="#clust-coral"/></g>
+  <g transform="translate(1245,50) scale(1.5) rotate(5)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(1370,110) scale(1.7) rotate(-15)"><use href="#clust-light"/></g>
+  <g transform="translate(1305,90) scale(1.5) rotate(18)"> <use href="#clust-pink"/></g>
+  <g transform="translate(1230,85) scale(1.4) rotate(-8)"> <use href="#clust-coral"/></g>
+  <g transform="translate(1190,45) scale(1.3) rotate(12)"> <use href="#clust-magenta"/></g>
+
+  <g transform="translate(1380,175) scale(1.7) rotate(6)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(1320,155) scale(1.5) rotate(-20)"><use href="#clust-pink"/></g>
+  <g transform="translate(1255,170) scale(1.4) rotate(14)"> <use href="#clust-coral"/></g>
+  <g transform="translate(1195,155) scale(1.3) rotate(-10)"><use href="#clust-light"/></g>
+  <g transform="translate(1345,230) scale(1.6) rotate(-8)"> <use href="#clust-pink"/></g>
+  <g transform="translate(1280,215) scale(1.45) rotate(20)"><use href="#clust-magenta"/></g>
+  <g transform="translate(1215,225) scale(1.3) rotate(-15)"><use href="#clust-coral"/></g>
+
+  <g transform="translate(1375,290) scale(1.55) rotate(10)"><use href="#clust-coral"/></g>
+  <g transform="translate(1310,275) scale(1.4) rotate(-18)"><use href="#clust-pink"/></g>
+  <g transform="translate(1240,285) scale(1.3) rotate(8)">  <use href="#clust-magenta"/></g>
+  <g transform="translate(1185,265) scale(1.2) rotate(-12)"><use href="#clust-light"/></g>
+  <g transform="translate(1350,350) scale(1.45) rotate(-5)"><use href="#clust-pink"/></g>
+  <g transform="translate(1280,340) scale(1.35) rotate(22)"><use href="#clust-coral"/></g>
+  <g transform="translate(1215,350) scale(1.2) rotate(-14)"><use href="#clust-magenta"/></g>
+
+  <g transform="translate(1370,410) scale(1.4) rotate(12)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(1305,400) scale(1.3) rotate(-20)"><use href="#clust-light"/></g>
+  <g transform="translate(1240,415) scale(1.2) rotate(6)">  <use href="#clust-pink"/></g>
+  <g transform="translate(1185,395) scale(1.1) rotate(-10)"><use href="#clust-coral"/></g>
+  <g transform="translate(1345,470) scale(1.35) rotate(-8)"><use href="#clust-coral"/></g>
+  <g transform="translate(1275,460) scale(1.25) rotate(18)"><use href="#clust-magenta"/></g>
+  <g transform="translate(1210,470) scale(1.1) rotate(-15)"><use href="#clust-light"/></g>
+
+  <g transform="translate(1370,525) scale(1.3) rotate(5)">  <use href="#clust-pink"/></g>
+  <g transform="translate(1305,515) scale(1.2) rotate(-22)"><use href="#clust-magenta"/></g>
+  <g transform="translate(1235,525) scale(1.1) rotate(10)"> <use href="#clust-coral"/></g>
+  <g transform="translate(1180,510) scale(1.0) rotate(-8)"> <use href="#clust-light"/></g>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CLUSTERS — HAUT CENTRE (retombée de fleurs)
+       ═══════════════════════════════════════════════════════════ -->
+  <g transform="translate(380,35) scale(1.3) rotate(-8)">  <use href="#clust-coral"/></g>
+  <g transform="translate(450,18) scale(1.2) rotate(12)">  <use href="#clust-pink"/></g>
+  <g transform="translate(520,30) scale(1.25) rotate(-5)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(590,12) scale(1.2) rotate(8)">   <use href="#clust-light"/></g>
+  <g transform="translate(660,28) scale(1.3) rotate(-15)"> <use href="#clust-pink"/></g>
+  <g transform="translate(730,10) scale(1.2) rotate(10)">  <use href="#clust-coral"/></g>
+  <g transform="translate(800,28) scale(1.25) rotate(-8)"> <use href="#clust-magenta"/></g>
+  <g transform="translate(870,15) scale(1.2) rotate(6)">   <use href="#clust-light"/></g>
+  <g transform="translate(940,30) scale(1.3) rotate(-12)"> <use href="#clust-pink"/></g>
+  <g transform="translate(1010,18) scale(1.2) rotate(15)"> <use href="#clust-coral"/></g>
+
+</svg>
