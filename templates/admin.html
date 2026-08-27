@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="admin-nav">
+  <span class="admin-nav-title">✈ Tour de contrôle — {{ couple }}</span>
+  <div class="admin-nav-links">
+    <a href="/">← Site public</a>
+    <a href="/admin/export-csv">⬇ Export CSV</a>
+  </div>
+</nav>
+
+<div class="admin-wrap">
+
+  <h2>Tableau de bord</h2>
+
+  <!-- ══ Stats ══ -->
+  <div class="stats-row">
+    <div class="stat stat-yes">
+      <span class="stat-number">{{ yes_count }}</span>
+      <span class="stat-label">Passagers confirmés</span>
+    </div>
+    <div class="stat stat-no">
+      <span class="stat-number">{{ no_count }}</span>
+      <span class="stat-label">Vols annulés</span>
+    </div>
+    <div class="stat stat-pend">
+      <span class="stat-number">{{ pending }}</span>
+      <span class="stat-label">En attente</span>
+    </div>
+    <div class="stat stat-total">
+      <span class="stat-number">{{ guests|length }}</span>
+      <span class="stat-label">Invités total</span>
+    </div>
+  </div>
+
+  <!-- ══ Taux de réponse ══ -->
+  <div class="admin-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+      <h3 style="margin:0;border:none;padding:0">Taux de réponse</h3>
+      <form method="post" action="/admin/set-expected" class="inline-form" style="margin:0">
+        <label style="font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--mid);white-space:nowrap">
+          Invités attendus :
+        </label>
+        <input type="number" name="expected" min="0" value="{{ expected }}" style="width:90px" />
+        <button type="submit" class="btn-primary" style="width:auto;padding:.45rem 1rem">OK</button>
+      </form>
+    </div>
+
+    {% if expected > 0 %}
+    <div class="taux-bars">
+      <div class="taux-row">
+        <span class="taux-label">Ont répondu</span>
+        <div class="bar-wrap"><div class="bar bar-gold" style="width:{{ taux_reponse }}%"></div></div>
+        <span class="taux-val">{{ repondu }} / {{ expected }} ({{ taux_reponse }}%)</span>
+      </div>
+      <div class="taux-row">
+        <span class="taux-label">Présents confirmés</span>
+        <div class="bar-wrap"><div class="bar bar-green" style="width:{{ taux_presence }}%"></div></div>
+        <span class="taux-val">{{ yes_count }} / {{ expected }} ({{ taux_presence }}%)</span>
+      </div>
+    </div>
+    {% else %}
+    <p style="color:var(--mid);font-size:.88rem;font-family:var(--mono);letter-spacing:.04em">
+      Entrez le nombre d'invités attendus pour voir les statistiques.
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- ══ Import CSV ══ -->
+  {% if request.query_params.get("imported") %}
+  <div class="alert-info" style="margin-bottom:1rem">
+    ✅ {{ request.query_params.get("imported") }} invité(s) importé(s) avec succès.
+  </div>
+  {% endif %}
+
+  <div class="admin-card">
+    <h3>Importer une liste CSV</h3>
+    <p style="font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;color:var(--mid);margin-bottom:1rem;line-height:1.7">
+      Format attendu : <code style="background:var(--cream);padding:.1rem .4rem;border-radius:3px">Prénom,Nom,Téléphone</code>
+      (une ligne par invité, en-tête ignoré automatiquement)
+    </p>
+    <form method="post" action="/admin/import-csv" enctype="multipart/form-data" class="inline-form">
+      <input type="file" name="file" accept=".csv,.txt" required
+             style="flex:1;border:1.5px solid var(--cream-d);border-radius:var(--radius);padding:.55rem .8rem;font-size:.9rem;background:#fafafa" />
+      <button type="submit" class="btn-primary" style="width:auto">Importer</button>
+    </form>
+  </div>
+
+  <!-- ══ Ajouter un invité ══ -->
+  <div class="admin-card">
+    <h3>Ajouter un passager manuellement</h3>
+    <form method="post" action="/admin/add-guest" class="inline-form">
+      <input type="text" name="prenom" placeholder="Prénom *" required />
+      <input type="text" name="nom"    placeholder="Nom *"    required />
+      <input type="text" name="telephone" placeholder="Téléphone (optionnel)" />
+      <button type="submit" class="btn-primary" style="width:auto">+ Ajouter</button>
+    </form>
+  </div>
+
+  <!-- ══ Recherche / Filtre ══ -->
+  <div class="admin-card" style="padding:1rem 1.5rem">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+      <input type="text" id="search-input" placeholder="🔍 Rechercher un passager…"
+             style="flex:1;min-width:200px;border:1.5px solid var(--cream-d);border-radius:var(--radius);padding:.55rem .9rem;font-size:.9rem;background:#fafafa;font-family:var(--sans)" />
+      <select id="filter-status"
+              style="border:1.5px solid var(--cream-d);border-radius:var(--radius);padding:.55rem .9rem;font-size:.9rem;background:#fafafa;font-family:var(--mono)">
+        <option value="">Tous les statuts</option>
+        <option value="yes">Confirmés</option>
+        <option value="no">Annulés</option>
+        <option value="pending">En attente</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- ══ Liste des invités ══ -->
+  <div class="admin-card" style="padding:1.5rem 1rem">
+    <h3 style="padding:0 .8rem 1rem;border-bottom:1px solid var(--cream-d);margin-bottom:0">
+      Liste des passagers
+      <span style="font-weight:300;color:var(--mid);font-size:.85em">({{ guests|length }} total)</span>
+    </h3>
+    <div class="table-wrap">
+      <table class="guest-table" id="guests-table">
+        <thead>
+          <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Téléphone</th>
+            <th>Code</th>
+            <th>Réponse</th>
+            <th>Message</th>
+            <th>Mis à jour</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for g in guests %}
+          <tr data-name="{{ g.prenom }} {{ g.nom }}" data-status="{{ g.response }}">
+            <td><strong>{{ g.prenom|title }}</strong></td>
+            <td><strong>{{ g.nom|upper }}</strong></td>
+            <td style="font-family:var(--mono);font-size:.82rem">{{ g.telephone or "–" }}</td>
+            <td><code class="code-badge">{{ g.code }}</code></td>
+            <td>
+              {% if g.response == "yes" %}
+                <span class="badge badge-yes">✈ Embarqué</span>
+              {% elif g.response == "no" %}
+                <span class="badge badge-no">✕ Annulé</span>
+              {% else %}
+                <span class="badge badge-pending">⏳ En attente</span>
+              {% endif %}
+            </td>
+            <td class="msg-cell" title="{{ g.message or '' }}">{{ g.message or "–" }}</td>
+            <td style="font-family:var(--mono);font-size:.78rem;white-space:nowrap">
+              {{ g.updated_at.strftime("%d/%m %H:%M") if g.updated_at else "–" }}
+            </td>
+            <td>
+              <form method="post" action="/admin/delete-guest/{{ g.id }}"
+                    onsubmit="return confirm('Supprimer {{ g.prenom }} {{ g.nom }} ?')">
+                <button type="submit" class="btn-danger">✕</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="8" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">
+            Aucun passager enregistré pour l'instant.
+          </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Recherche + filtre dynamique ──────────────────────────────
+  const searchInput  = document.getElementById('search-input');
+  const filterStatus = document.getElementById('filter-status');
+  const rows = document.querySelectorAll('#guests-table tbody tr[data-name]');
+
+  function applyFilter() {
+    const q      = searchInput.value.toLowerCase();
+    const status = filterStatus.value;
+    rows.forEach(row => {
+      const matchName   = row.dataset.name.toLowerCase().includes(q);
+      const matchStatus = !status || row.dataset.status === status;
+      row.style.display = (matchName && matchStatus) ? '' : 'none';
+    });
+  }
+
+  searchInput.addEventListener('input', applyFilter);
+  filterStatus.addEventListener('change', applyFilter);
+</script>
+
+{% endblock %}

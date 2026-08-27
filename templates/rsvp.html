@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Mini hero sur la page RSVP -->
+<div style="background:transparent;text-align:center;padding:2.5rem 1rem 0;position:relative;z-index:1">
+  <div style="font-family:'Great Vibes',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--terra);margin-bottom:.3rem">
+    {{ couple }}
+  </div>
+  <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--mid)">
+    {{ flight_num }} · {{ date }} · {{ place }}
+  </div>
+  <div style="width:80px;height:2px;background:var(--terra-grad,linear-gradient(135deg,#B85233,#8C3A20));margin:.8rem auto 0;border-radius:2px"></div>
+</div>
+
+<section class="bp-section">
+  <p class="section-title">✈ Carte d'embarquement — Boarding Pass</p>
+
+  {% if guest.response != "pending" %}
+  <div class="alert-info" style="max-width:800px;width:100%;margin-bottom:1.5rem">
+    Vous avez déjà répondu. Vous pouvez modifier votre réponse ci-dessous.
+  </div>
+  {% endif %}
+
+  <!-- ══ Boarding Pass ══ -->
+  <div class="boarding-pass">
+    <div class="bp-main">
+      <div class="bp-stripe"></div>
+
+      <div class="bp-flight-num">{{ flight_num }}</div>
+      <div class="bp-passenger">
+        {{ guest.prenom|upper }}<br>
+        <span style="font-weight:400;font-size:1.35rem">{{ guest.nom|upper }}</span>
+      </div>
+
+      <div class="bp-route">
+        <div class="bp-airport">
+          <div class="bp-iata">PAR</div>
+          <div class="bp-city">Paris</div>
+        </div>
+        <div class="bp-route-line">
+          <div class="bp-route-dash"></div>
+          <span style="font-size:1.1rem">✈</span>
+          <div class="bp-route-dash"></div>
+        </div>
+        <div class="bp-airport">
+          <div class="bp-iata">CAR</div>
+          <div class="bp-city">{{ destination }}</div>
+        </div>
+      </div>
+
+      <div class="bp-info-grid">
+        <div class="bp-info-block">
+          <div class="bp-info-label">Date</div>
+          <div class="bp-info-value" style="font-size:.75rem">{{ date }}</div>
+        </div>
+        <div class="bp-info-block">
+          <div class="bp-info-label">Embarquement</div>
+          <div class="bp-info-value">{{ hour }}</div>
+        </div>
+        <div class="bp-info-block">
+          <div class="bp-info-label">Classe</div>
+          <div class="bp-info-value">PREMIÈRE</div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;color:var(--mid)">
+        CODE PASSAGER : <strong style="color:var(--mahogany)">{{ guest.code }}</strong>
+        &nbsp;·&nbsp; {{ place }}
+      </div>
+    </div>
+
+    <!-- Stub -->
+    <div class="bp-stub">
+      <div class="bp-stub-stripe"></div>
+      <div class="bp-stub-title">Talon / Stub</div>
+      <div class="bp-stub-passenger">
+        {{ guest.prenom|upper }}<br>
+        {{ guest.nom|upper }}
+      </div>
+      <div class="bp-stub-seat">{{ seat }}</div>
+      <div class="bp-stub-seat-label">Siège / Seat</div>
+      <div class="bp-barcode" id="barcode"></div>
+    </div>
+  </div>
+
+  <!-- ══ Formulaire ══ -->
+  <div class="bp-form-section">
+    <div class="bp-form-card">
+      <h3>✈ Confirmation d'embarquement</h3>
+
+      <form method="post" action="/rsvp/{{ guest.code }}">
+
+        <div class="choice-grid">
+          <label class="choice-card {% if guest.response == 'yes' %}selected-yes{% endif %}" id="card-yes">
+            <input type="radio" name="response" value="yes" {% if guest.response == 'yes' %}checked{% endif %} required />
+            <span class="choice-icon">🛫</span>
+            <span class="choice-label">Confirmer<br>mon embarquement</span>
+          </label>
+          <label class="choice-card {% if guest.response == 'no' %}selected-no{% endif %}" id="card-no">
+            <input type="radio" name="response" value="no" {% if guest.response == 'no' %}checked{% endif %} />
+            <span class="choice-icon">🚫</span>
+            <span class="choice-label">Je ne pourrai<br>pas embarquer</span>
+          </label>
+        </div>
+
+
+        <div class="field">
+          <label for="email">Votre adresse e-mail <span style="color:var(--mid);font-weight:300">(pour recevoir la confirmation)</span></label>
+          <input type="email" id="email" name="email"
+                 placeholder="exemple@gmail.com"
+                 value="{{ guest.email or '' }}"
+                 autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="message">Un mot pour les mariés (optionnel)</label>
+          <textarea id="message" name="message" rows="3"
+                    placeholder="Vos vœux, une pensée, une chanson à dédier…">{{ guest.message or '' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          ✈ &nbsp; Valider ma réponse
+        </button>
+      </form>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  // Barcode décoratif
+  (function() {
+    const bc  = document.getElementById('barcode');
+    const val = parseInt("{{ guest.code }}", 16);
+    for (let i = 0; i < 28; i++) {
+      const s = document.createElement('span');
+      s.style.height  = (20 + ((val * (i + 7)) % 42)) + 'px';
+      s.style.width   = (i % 3 === 0) ? '4px' : '2px';
+      s.style.opacity = .6 + (i % 4) * .09;
+      bc.appendChild(s);
+    }
+  })();
+
+  // Mise à jour visuelle des choix
+  const radios  = document.querySelectorAll('input[name="response"]');
+  const cardYes = document.getElementById('card-yes');
+  const cardNo  = document.getElementById('card-no');
+
+  function updateChoice() {
+    const val = document.querySelector('input[name="response"]:checked')?.value;
+    cardYes.className = 'choice-card' + (val === 'yes' ? ' selected-yes' : '');
+    cardNo.className  = 'choice-card' + (val === 'no'  ? ' selected-no'  : '');
+  }
+
+  radios.forEach(r => r.addEventListener('change', updateChoice));
+  updateChoice();
+</script>
+
+{% endblock %}

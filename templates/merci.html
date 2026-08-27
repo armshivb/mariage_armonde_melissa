@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Mini hero -->
+<div style="background:transparent;text-align:center;padding:2.5rem 1rem 0;position:relative;z-index:1">
+  <div style="font-family:'Great Vibes',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--terra);margin-bottom:.3rem">
+    {{ couple }}
+  </div>
+  <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--mid)">
+    {% if guest.response == "yes" %}
+      ✅ Embarquement confirmé · Boarding Confirmed
+    {% else %}
+      Réponse enregistrée
+    {% endif %}
+  </div>
+  <div style="width:80px;height:2px;background:linear-gradient(135deg,#B85233,#8C3A20);margin:.8rem auto 0;border-radius:2px"></div>
+</div>
+
+<section class="bp-section">
+  <p class="section-title">
+    {% if guest.response == "yes" %}✅{% else %}✈{% endif %}
+    Carte d'embarquement finale
+  </p>
+
+  <!-- ══ Boarding Pass final ══ -->
+  <div class="boarding-pass" style="position:relative">
+
+    <div class="bp-main">
+      <div class="bp-stripe"></div>
+
+      <div class="bp-flight-num">{{ flight_num }}</div>
+      <div class="bp-passenger">
+        {{ guest.prenom|upper }}<br>
+        <span style="font-weight:400;font-size:1.35rem">{{ guest.nom|upper }}</span>
+      </div>
+
+      <div class="bp-route">
+        <div class="bp-airport">
+          <div class="bp-iata">PAR</div>
+          <div class="bp-city">Paris</div>
+        </div>
+        <div class="bp-route-line">
+          <div class="bp-route-dash"></div>
+          <span style="font-size:1.1rem">✈</span>
+          <div class="bp-route-dash"></div>
+        </div>
+        <div class="bp-airport">
+          <div class="bp-iata">CAR</div>
+          <div class="bp-city">{{ destination }}</div>
+        </div>
+      </div>
+
+      <div class="bp-info-grid">
+        <div class="bp-info-block">
+          <div class="bp-info-label">Date</div>
+          <div class="bp-info-value" style="font-size:.75rem">{{ date }}</div>
+        </div>
+        <div class="bp-info-block">
+          <div class="bp-info-label">Embarquement</div>
+          <div class="bp-info-value">{{ hour }}</div>
+        </div>
+        <div class="bp-info-block">
+          <div class="bp-info-label">
+            {% if guest.response == "yes" %}Passagers{% else %}Statut{% endif %}
+          </div>
+          <div class="bp-info-value">
+            {% if guest.response == "yes" %}{{ 1 + guest.plus_one }}{% else %}ANNULÉ{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;color:var(--mid)">
+        CODE : <strong style="color:var(--mahogany)">{{ guest.code }}</strong>
+        &nbsp;·&nbsp; {{ place }}
+        {% if guest.response == "yes" and guest.regime and guest.regime != "standard" %}
+        &nbsp;·&nbsp; {{ guest.regime|upper }}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Stub -->
+    <div class="bp-stub">
+      <div class="bp-stub-stripe"></div>
+      <div class="bp-stub-title">Talon / Stub</div>
+      <div class="bp-stub-passenger">
+        {{ guest.prenom|upper }}<br>
+        {{ guest.nom|upper }}
+      </div>
+
+      {% if guest.response == "yes" %}
+        <div class="bp-stub-seat">{{ seat }}</div>
+        <div class="bp-stub-seat-label">Siège / Seat</div>
+      {% else %}
+        <div class="bp-stub-seat" style="font-size:2rem;color:var(--rose)">✕</div>
+        <div class="bp-stub-seat-label" style="color:var(--rose)">VOL ANNULÉ</div>
+      {% endif %}
+
+      <div class="bp-barcode" id="barcode"></div>
+    </div>
+
+    <!-- Tampon -->
+    {% if guest.response == "yes" %}
+    <div class="confirmed-stamp" style="left:42%;top:55%">EMBARQUEMENT<br>CONFIRMÉ ✓</div>
+    {% else %}
+    <div class="confirmed-stamp declined-stamp" style="left:42%;top:55%">VOL<br>ANNULÉ</div>
+    {% endif %}
+
+  </div>
+
+  <!-- Message personnel -->
+  {% if guest.message %}
+  <div class="bp-message-block">
+    <div class="msg-title">Votre message aux mariés</div>
+    <blockquote>« {{ guest.message }} »</blockquote>
+  </div>
+  {% endif %}
+
+  <!-- Confirmation texte -->
+  <div class="bp-message-block">
+    {% if guest.response == "yes" %}
+    <div class="msg-title" style="color:#2A8C4A">✅ Embarquement confirmé !</div>
+    <p style="color:var(--mid);font-size:.9rem;margin-top:.6rem;line-height:1.7">
+      Nous sommes ravis de vous compter parmi nos passagers !
+      {% if guest.plus_one > 0 %}
+        Nous attendons <strong>{{ 1 + guest.plus_one }} personne(s)</strong> de votre côté.
+      {% endif %}
+      Rendez-vous le <strong>{{ date }}</strong> à <strong>{{ hour }}</strong>,
+      à <em>{{ place }}</em>.
+    </p>
+    {% else %}
+    <div class="msg-title" style="color:var(--rose)">💌 Réponse enregistrée</div>
+    <p style="color:var(--mid);font-size:.9rem;margin-top:.6rem;line-height:1.7">
+      Nous sommes tristes de ne pas pouvoir vous avoir parmi nous en ce grand jour,
+      mais nous pensons à vous avec beaucoup d'amour !
+    </p>
+    {% endif %}
+  </div>
+
+  <!-- Actions -->
+  <div class="bp-actions">
+    <a href="/rsvp/{{ guest.code }}" class="btn-outline">✏ Modifier ma réponse</a>
+    {% if guest.response == "yes" %}
+    <a href="/ics/{{ guest.code }}" class="btn-primary btn-mahogany">📅 Ajouter au calendrier</a>
+    {% endif %}
+    <button onclick="window.print()" class="btn-primary">🖨 Imprimer le boarding pass</button>
+  </div>
+
+
+</section>
+
+<script>
+  // ── Barcode décoratif ─────────────────────────────────────────
+  (function() {
+    const bc  = document.getElementById('barcode');
+    const val = parseInt("{{ guest.code }}", 16);
+    for (let i = 0; i < 28; i++) {
+      const s = document.createElement('span');
+      s.style.height  = (20 + ((val * (i + 7)) % 42)) + 'px';
+      s.style.width   = (i % 3 === 0) ? '4px' : '2px';
+      s.style.opacity = .6 + (i % 4) * .09;
+      bc.appendChild(s);
+    }
+  })();
+</script>
+
+{% endblock %}

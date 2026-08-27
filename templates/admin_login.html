@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="checkin-section">
+  <div style="max-width:420px;width:100%">
+    <div class="card card-checkin">
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="font-size:2.5rem;margin-bottom:.8rem">🔐</div>
+        <h2 style="font-family:var(--mono);font-size:1rem;letter-spacing:.25em;text-transform:uppercase;color:var(--navy)">
+          Espace Admin
+        </h2>
+        <p style="font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--mid);margin-top:.4rem">
+          ACCÈS RÉSERVÉ — MARIÉS SEULEMENT
+        </p>
+      </div>
+
+      {% if error %}
+      <div class="alert-error">⚠ {{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/admin">
+        <div class="field">
+          <label for="password">Code d'accès</label>
+          <input type="password" id="password" name="password"
+                 placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-primary btn-gold">
+          🛂 &nbsp; Accéder au contrôle
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ══ HERO FLORAL ══ -->
+<section class="hero-section">
+  <div class="hero-content">
+
+    <!-- Monogramme -->
+    <div class="hero-monogram">
+      <span class="mono-letter">M</span>
+      <span class="mono-amp">&amp;</span>
+      <span class="mono-letter">A</span>
+    </div>
+
+    <!-- Décoration feuilles -->
+    <div class="hero-leaves">
+      ❧ &nbsp; ✦ &nbsp; ❧
+    </div>
+
+    <p class="hero-subtitle">Mariage de {{ couple }}</p>
+    <h1 class="hero-title">Confirmez votre présence</h1>
+    <p class="hero-script">Votre réponse nous permettra d'organiser au mieux notre grand jour</p>
+
+    <div style="margin-top:1rem">
+      <span class="hero-info">{{ date }} &nbsp;·&nbsp; {{ place }}</span>
+    </div>
+
+    <div class="hero-divider"></div>
+  </div>
+</section>
+
+
+<!-- ══ Check-in Section ══ -->
+<section class="checkin-section">
+  <div class="checkin-grid">
+
+    <!-- Formulaire check-in -->
+    <div class="card card-checkin">
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem">
+        <span style="font-size:2rem">🧳</span>
+        <div>
+          <h2>Check-in Passager</h2>
+          <p class="card-sub">Identifiez-vous pour accéder à votre carte d'embarquement</p>
+        </div>
+      </div>
+
+      {% if error %}
+      <div class="alert-error">✈ {{ error }}</div>
+      {% endif %}
+
+      <div class="search-tabs">
+        <button type="button" class="search-tab active" onclick="switchTab('name')">Par nom</button>
+        <button type="button" class="search-tab" onclick="switchTab('phone')">Par téléphone</button>
+      </div>
+
+      <form method="post" action="/" id="checkin-form">
+        <input type="hidden" name="recherche" id="recherche-hidden" />
+
+        <div class="search-panel active" id="panel-name">
+          <div class="field-row">
+            <div class="field">
+              <label for="inp-prenom">Prénom *</label>
+              <input type="text" id="inp-prenom" placeholder="Ex : Melissa" autocomplete="given-name" />
+            </div>
+            <div class="field">
+              <label for="inp-nom">Nom de famille *</label>
+              <input type="text" id="inp-nom" placeholder="Ex : Dupont" autocomplete="family-name" />
+            </div>
+          </div>
+        </div>
+
+        <div class="search-panel" id="panel-phone">
+          <div class="field">
+            <label for="inp-phone">Numéro de téléphone *</label>
+            <input type="tel" id="inp-phone" placeholder="Ex : 0696123456" autocomplete="tel" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top:.5rem">
+          ✈ &nbsp; Accéder à mon enregistrement
+        </button>
+      </form>
+
+      <p style="margin-top:1.2rem;font-size:.75rem;color:var(--mid);font-family:var(--mono);letter-spacing:.04em;text-align:center">
+        🔒 Vos informations sont sécurisées et confidentielles
+      </p>
+    </div>
+
+    <!-- Sidebar : Détails du vol -->
+    <div class="card-flight-details">
+      <h3>✈ Détails du vol</h3>
+
+      <div class="detail-row">
+        <span class="detail-icon">📅</span>
+        <div>
+          <div class="detail-label">Date</div>
+          <div class="detail-value">{{ date }}</div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">🕐</span>
+        <div>
+          <div class="detail-label">Heure d'embarquement</div>
+          <div class="detail-value">{{ hour }}</div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-icon">📍</span>
+        <div>
+          <div class="detail-label">Lieu de départ</div>
+          <div class="detail-value">Habitation Beau Pays</div>
+          <div class="detail-sub">60 boulevard du bord de mer, Petite Anse<br>Le Carbet 97221, Martinique</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="detail-row">
+        <span class="detail-icon">🛫</span>
+        <div>
+          <div class="detail-label">Vol</div>
+          <div class="detail-value">{{ flight_num }}</div>
+        </div>
+      </div>
+
+
+      <hr class="divider" />
+
+      <div class="detail-row">
+        <span class="detail-icon">🌺</span>
+        <div>
+          <div class="detail-label">Classe</div>
+          <span class="classe-badge">Première Classe</span>
+          <div class="detail-sub" style="margin-top:.4rem">Célébration · Dîner · Soirée</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <div style="text-align:center;font-size:.85rem;color:#9A7060;font-style:italic;line-height:1.6;font-family:'Great Vibes',cursive;font-size:1.1rem">
+        Nous avons hâte de voyager avec vous !
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  // Tabs
+  let activeTab = 'name';
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.search-tab').forEach((t,i) => {
+      t.classList.toggle('active', (tab==='name' ? i===0 : i===1));
+    });
+    document.querySelectorAll('.search-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // Soumission
+  document.getElementById('checkin-form').addEventListener('submit', function(e) {
+    const hidden = document.getElementById('recherche-hidden');
+    if (activeTab === 'name') {
+      const prenom = document.getElementById('inp-prenom').value.trim();
+      const nom    = document.getElementById('inp-nom').value.trim();
+      if (!prenom || !nom) { e.preventDefault(); alert('Veuillez saisir votre prénom et votre nom.'); return; }
+      hidden.value = prenom + ' ' + nom;
+    } else {
+      const phone = document.getElementById('inp-phone').value.trim();
+      if (!phone) { e.preventDefault(); alert('Veuillez saisir votre numéro de téléphone.'); return; }
+      hidden.value = phone;
+    }
+  });
+</script>
+
+{% endblock %}
