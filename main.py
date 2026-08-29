@@ -303,6 +303,14 @@ def resend_guest_email(db: Session, guest_id: int):
     return guest
 
 
+def build_cabin_map(db: Session):
+    cabin = {}
+    for guest in db.query(Guest).filter(Guest.response == "yes").all():
+        seat = get_seat(guest.code)
+        cabin[seat] = guest
+    return cabin
+
+
 # ── Admin login ────────────────────────────────────────────────────────────────
 @app.get("/admin", response_class=HTMLResponse)
 def admin_login(request: Request):
@@ -348,6 +356,21 @@ def admin_dashboard(request: Request, db: Session = Depends(get_db)):
               guests=guests, yes_count=yes_count, no_count=no_count,
               pending=pending, repondu=repondu, expected=expected,
               taux_reponse=taux_reponse, taux_presence=taux_presence)
+
+
+@app.get("/admin/cabin-plan", response_class=HTMLResponse)
+def admin_cabin_plan(request: Request, db: Session = Depends(get_db)):
+    guests = db.query(Guest).filter(Guest.response == "yes").order_by(Guest.nom, Guest.prenom).all()
+    cabin = build_cabin_map(db)
+    seat_lookup = {guest.id: get_seat(guest.code) for guest in guests}
+    rows = []
+    for row in range(1, 11):
+        seats = []
+        for col in ["A", "B", "C", "D", "E", "F"]:
+            seat = f"{row}{col}"
+            seats.append({"seat": seat, "guest": cabin.get(seat)})
+        rows.append(seats)
+    return tr("admin_cabin.html", request, guests=guests, cabin_rows=rows, cabin=cabin, seat_lookup=seat_lookup)
 
 
 @app.post("/admin/set-expected")

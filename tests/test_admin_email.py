@@ -50,6 +50,25 @@ class AdminGuestEmailTest(unittest.TestCase):
         self.assertIsNotNone(result)
         self.assertEqual(result.email, "bob@example.com")
 
+    def test_build_cabin_map_for_confirmed_guests(self):
+        guest = Guest(
+            prenom="Charlie",
+            nom="Durand",
+            telephone="0123456788",
+            email="charlie@example.com",
+            code="ABCD",
+            response="yes",
+        )
+        self.db.add(guest)
+        self.db.commit()
+
+        from main import build_cabin_map, get_seat
+
+        cabin = build_cabin_map(self.db)
+        expected_seat = get_seat(guest.code)
+        self.assertIn(expected_seat, cabin)
+        self.assertEqual(cabin[expected_seat].prenom, "Charlie")
+
 
 if __name__ == "__main__":
     unittest.main()

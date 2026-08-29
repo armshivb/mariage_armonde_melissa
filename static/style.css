@@ -1051,6 +1051,89 @@ blockquote {
 .bar-green { background: #2A8C4A; }
 .taux-val  { font-family: var(--mono); font-size: .8rem; font-weight: 700; color: var(--mahogany); white-space: nowrap; }
 
+/* Plan de cabine */
+.cabin-shell {
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(251,245,236,.96));
+  border: 1px solid var(--cream-d);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.cabin-grid {
+  display: grid;
+  gap: .6rem;
+}
+.cabin-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(90px, 1fr));
+  gap: .55rem;
+}
+.cabin-seat {
+  min-height: 78px;
+  border-radius: var(--radius);
+  padding: .55rem .45rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(44,18,8,.08);
+  background: #f5efe5;
+  color: var(--mid);
+}
+.cabin-seat.occupied {
+  background: linear-gradient(145deg, rgba(200,149,58,.16), rgba(184,82,51,.08));
+  border-color: rgba(184,82,51,.25);
+  color: var(--mahogany);
+}
+.cabin-seat.empty {
+  background: #f7f3ef;
+  opacity: .75;
+}
+.seat-code {
+  font-family: var(--mono);
+  font-size: .66rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.seat-name {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: .8rem;
+  margin-top: .2rem;
+}
+.seat-lastname {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-top: .1rem;
+}
+.seat-empty {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.cabin-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+  margin-top: 1rem;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.cabin-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.swatch {
+  width: 12px; height: 12px; border-radius: 3px; display: inline-block;
+}
+.swatch-occupied { background: var(--terra); }
+.swatch-empty { background: #f5efe5; border: 1px solid rgba(44,18,8,.08); }
+
 /* Footer */
 footer {
   background: var(--mahogany);
