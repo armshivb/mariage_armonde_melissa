@@ -182,14 +182,22 @@ def generate_unique_code(db: Session) -> str:
 @app.on_event("startup")
 def startup():
     init_db()
-    # Migration : ajouter la colonne email si elle n'existe pas encore
+    # Migration : ajouter les colonnes du plan de table / algorithme si elles n'existent pas
     from sqlalchemy import text
     from database import engine
     with engine.connect() as conn:
         cols = [r[1] for r in conn.execute(text("PRAGMA table_info(guests)")).fetchall()]
-        if "email" not in cols:
-            conn.execute(text("ALTER TABLE guests ADD COLUMN email TEXT DEFAULT ''"))
-            conn.commit()
+        for field, definition in {
+            "email": "TEXT DEFAULT ''",
+            "table_number": "INTEGER DEFAULT 0",
+            "seat_number": "TEXT DEFAULT ''",
+            "affinity_group": "INTEGER DEFAULT 0",
+            "affinity_score": "INTEGER DEFAULT 0",
+            "relation_notes": "TEXT DEFAULT ''",
+        }.items():
+            if field not in cols:
+                conn.execute(text(f"ALTER TABLE guests ADD COLUMN {field} {definition}"))
+        conn.commit()
 
 
 def common(request: Request, **kwargs):
@@ -361,16 +369,50 @@ def admin_dashboard(request: Request, db: Session = Depends(get_db)):
 @app.get("/admin/cabin-plan", response_class=HTMLResponse)
 def admin_cabin_plan(request: Request, db: Session = Depends(get_db)):
     guests = db.query(Guest).filter(Guest.response == "yes").order_by(Guest.nom, Guest.prenom).all()
-    cabin = build_cabin_map(db)
-    seat_lookup = {guest.id: get_seat(guest.code) for guest in guests}
-    rows = []
-    for row in range(1, 11):
-        seats = []
-        for col in ["A", "B", "C", "D", "E", "F"]:
-            seat = f"{row}{col}"
-            seats.append({"seat": seat, "guest": cabin.get(seat)})
-        rows.append(seats)
-    return tr("admin_cabin.html", request, guests=guests, cabin_rows=rows, cabin=cabin, seat_lookup=seat_lookup)
+    table_map = {}
+    for guest in guests:
+        table_num = guest.table_number or 1 if guest.table_number else 1
+        table_map.setdefault(table_num, []).append(guest)
+
+    if not table_map:
+        preview_tables = []
+        for i in range(0, max(1, (len(guests) + 9) // 10)):
+            chunk = guests[i * 10 : (i + 1) * 10]
+            preview_table = []
+            for idx, guest in enumerate(chunk, start=1):
+                preview_table.append({
+                    "seat": idx,
+                    "guest": guest,
+                    "table_number": i + 1,
+                })
+            preview_tables.append({
+                "number": i + 1,
+                "seats": preview_table,
+            })
+    else:
+        preview_tables = []
+        for table_number in sorted(table_map):
+            seats = []
+            for idx in range(1, 11):
+                guest = next((g for g in table_map[table_number] if (g.seat_number or str(idx)) == str(idx)), None)
+                seats.append({
+                    "seat": idx,
+                    "guest": guest,
+                    "table_number": table_number,
+                })
+            preview_tables.append({
+                "number": table_number,
+                "seats": seats,
+            })
+
+    return tr(
+        "admin_cabin.html",
+        request,
+        guests=guests,
+        tables=preview_tables,
+        total_tables=len(preview_tables),
+        total_confirmed=len(guests),
+    )
 
 
 @app.post("/admin/set-expected")

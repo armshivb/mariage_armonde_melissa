@@ -12,47 +12,61 @@
 <div class="admin-wrap">
   <h2>Avion & plan de cabine</h2>
 
+  <div class="stats-row">
+    <div class="stat stat-total">
+      <span class="stat-number">{{ total_tables }}</span>
+      <span class="stat-label">Tables</span>
+    </div>
+    <div class="stat stat-yes">
+      <span class="stat-number">{{ total_confirmed }}</span>
+      <span class="stat-label">Confirmés</span>
+    </div>
+    <div class="stat stat-pend">
+      <span class="stat-number">10</span>
+      <span class="stat-label">Par table</span>
+    </div>
+  </div>
+
   <div class="admin-card">
-    <h3>Check-in confirmé</h3>
-    <div class="cabin-shell">
-      <div class="cabin-grid">
-        {% for row in cabin_rows %}
-        <div class="cabin-row">
-          {% for seat in row %}
-          <div class="cabin-seat {% if seat.guest %}occupied{% else %}empty{% endif %}">
-            <span class="seat-code">{{ seat.seat }}</span>
+    <h3>Vue graphique des tables</h3>
+    <div class="table-plan-grid">
+      {% for table in tables %}
+      <div class="table-card">
+        <div class="table-card-header">Table {{ table.number }}</div>
+        <div class="table-seat-grid">
+          {% for seat in table.seats %}
+          <div class="table-seat {% if seat.guest %}filled{% else %}empty{% endif %}">
+            <span class="seat-index">{{ seat.seat }}</span>
             {% if seat.guest %}
               <span class="seat-name">{{ seat.guest.prenom|title }}</span>
-              <span class="seat-lastname">{{ seat.guest.nom|upper }}</span>
-              {% if seat.guest.plus_one %}
-                <span class="seat-lastname">+{{ seat.guest.plus_one }}</span>
-              {% endif %}
+              <span class="seat-surname">{{ seat.guest.nom|upper }}</span>
             {% else %}
               <span class="seat-empty">Libre</span>
             {% endif %}
           </div>
           {% endfor %}
         </div>
-        {% endfor %}
       </div>
-      <div class="cabin-legend">
-        <span><i class="swatch swatch-occupied"></i> Occupé</span>
-        <span><i class="swatch swatch-empty"></i> Libre</span>
-      </div>
+      {% else %}
+      <p class="empty-state">Aucune table n’a encore été attribuée. Les invités apparaîtront ici dès qu’un plan sera généré.</p>
+      {% endfor %}
     </div>
   </div>
 
   <div class="admin-card">
-    <h3>Liste des passagers enregistrés</h3>
+    <h3>Liste des invités enregistrés</h3>
     <div class="table-wrap">
       <table class="guest-table">
         <thead>
           <tr>
             <th>Prénom</th>
             <th>Nom</th>
+            <th>Email</th>
+            <th>Table</th>
             <th>Siège</th>
-            <th>Accompagnants</th>
-            <th>Statut</th>
+            <th>Groupe</th>
+            <th>Affinité</th>
+            <th>Liens</th>
           </tr>
         </thead>
         <tbody>
@@ -60,12 +74,15 @@
           <tr>
             <td><strong>{{ g.prenom|title }}</strong></td>
             <td><strong>{{ g.nom|upper }}</strong></td>
-            <td><code class="code-badge">{{ seat_lookup[g.id] }}</code></td>
-            <td>{{ g.plus_one or 0 }}</td>
-            <td><span class="badge badge-yes">✓ Check-in</span></td>
+            <td style="font-family:var(--mono);font-size:.75rem;">{{ g.email or "–" }}</td>
+            <td>{{ g.table_number or "–" }}</td>
+            <td>{{ g.seat_number or "–" }}</td>
+            <td>{{ g.affinity_group or "–" }}</td>
+            <td>{{ g.affinity_score if g.affinity_score is not none else "–" }}</td>
+            <td>{{ g.relation_notes or "–" }}</td>
           </tr>
           {% else %}
-          <tr><td colspan="5" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">Aucun invité confirmé pour l'instant.</td></tr>
+          <tr><td colspan="8" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">Aucun invité confirmé pour l'instant.</td></tr>
           {% endfor %}
         </tbody>
       </table>
