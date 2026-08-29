@@ -294,6 +294,15 @@ def rsvp_post(
     return tr("merci.html", request, guest=guest, seat=seat)
 
 
+def resend_guest_email(db: Session, guest_id: int):
+    guest = db.query(Guest).filter(Guest.id == guest_id).first()
+    if not guest or not guest.email:
+        return None
+    seat = get_seat(guest.code)
+    send_confirmation_email(guest, seat)
+    return guest
+
+
 # ── Admin login ────────────────────────────────────────────────────────────────
 @app.get("/admin", response_class=HTMLResponse)
 def admin_login(request: Request):
@@ -344,6 +353,12 @@ def admin_dashboard(request: Request, db: Session = Depends(get_db)):
 @app.post("/admin/set-expected")
 def set_expected(expected: int = Form(...), db: Session = Depends(get_db)):
     set_setting(db, "expected_guests", str(max(0, expected)))
+    return RedirectResponse("/admin/dashboard", status_code=302)
+
+
+@app.post("/admin/resend-email/{guest_id}")
+def resend_email_route(guest_id: int, db: Session = Depends(get_db)):
+    resend_guest_email(db, guest_id)
     return RedirectResponse("/admin/dashboard", status_code=302)
 
 

@@ -30,6 +30,26 @@ class AdminGuestEmailTest(unittest.TestCase):
         self.assertIsNotNone(guest)
         self.assertEqual(guest.email, "alice@example.com")
 
+    def test_resend_confirmation_email_for_existing_guest(self):
+        guest = Guest(
+            prenom="Bob",
+            nom="Lefevre",
+            telephone="0987654321",
+            email="bob@example.com",
+            code="ABC123",
+            response="yes",
+            plus_one=1,
+        )
+        self.db.add(guest)
+        self.db.commit()
+
+        # helper should not crash and should keep the same email
+        from main import resend_guest_email
+
+        result = resend_guest_email(self.db, guest.id)
+        self.assertIsNotNone(result)
+        self.assertEqual(result.email, "bob@example.com")
+
 
 if __name__ == "__main__":
     unittest.main()

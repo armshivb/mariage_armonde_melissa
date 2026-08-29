@@ -159,7 +159,10 @@
             <td style="font-family:var(--mono);font-size:.78rem;white-space:nowrap">
               {{ g.updated_at.strftime("%d/%m %H:%M") if g.updated_at else "–" }}
             </td>
-            <td>
+            <td style="display:flex;gap:.5rem;align-items:center;justify-content:flex-end">
+              <form method="post" action="/admin/resend-email/{{ g.id }}">
+                <button type="submit" class="btn-primary" title="Renvoyer le mail de confirmation" style="width:auto;padding:.4rem .7rem">✉</button>
+              </form>
               <form method="post" action="/admin/delete-guest/{{ g.id }}"
                     onsubmit="return confirm('Supprimer {{ g.prenom }} {{ g.nom }} ?')">
                 <button type="submit" class="btn-danger">✕</button>
