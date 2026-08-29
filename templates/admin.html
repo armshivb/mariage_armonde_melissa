@@ -93,6 +93,7 @@
       <input type="text" name="prenom" placeholder="Prénom *" required />
       <input type="text" name="nom"    placeholder="Nom *"    required />
       <input type="text" name="telephone" placeholder="Téléphone (optionnel)" />
+      <input type="email" name="email" placeholder="Email (optionnel)" />
       <button type="submit" class="btn-primary" style="width:auto">+ Ajouter</button>
     </form>
   </div>
@@ -125,6 +126,7 @@
             <th>Prénom</th>
             <th>Nom</th>
             <th>Téléphone</th>
+            <th>Email</th>
             <th>Code</th>
             <th>Réponse</th>
             <th>Message</th>
@@ -139,6 +141,7 @@
             <td><strong>{{ g.prenom|title }}</strong></td>
             <td><strong>{{ g.nom|upper }}</strong></td>
             <td style="font-family:var(--mono);font-size:.82rem">{{ g.telephone or "–" }}</td>
+            <td style="font-family:var(--mono);font-size:.82rem">{{ g.email or "–" }}</td>
             <td><code class="code-badge">{{ g.code }}</code></td>
             <td>
               {% if g.response == "yes" %}
@@ -164,7 +167,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="9" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">
+          <tr><td colspan="10" style="text-align:center;color:#aaa;padding:2rem;font-family:var(--mono);font-size:.82rem">
             Aucun passager enregistré pour l'instant.
           </td></tr>
           {% endfor %}

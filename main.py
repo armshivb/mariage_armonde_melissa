@@ -351,11 +351,12 @@ def set_expected(expected: int = Form(...), db: Session = Depends(get_db)):
 @app.post("/admin/add-guest")
 def add_guest(
     prenom: str = Form(...), nom: str = Form(...),
-    telephone: str = Form(""), db: Session = Depends(get_db)
+    telephone: str = Form(""), email: str = Form(""),
+    db: Session = Depends(get_db)
 ):
     code = generate_unique_code(db)
     db.add(Guest(prenom=prenom.strip(), nom=nom.strip(),
-                 telephone=telephone.strip(), code=code))
+                 telephone=telephone.strip(), email=email.strip(), code=code))
     db.commit()
     return RedirectResponse("/admin/dashboard", status_code=302)
 
@@ -373,10 +374,11 @@ async def import_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
         prenom = row[0].strip() if len(row) > 0 else ""
         nom    = row[1].strip() if len(row) > 1 else ""
         tel    = row[2].strip() if len(row) > 2 else ""
+        email_ = row[3].strip() if len(row) > 3 else ""
         if not prenom and not nom:
             continue
         code = generate_unique_code(db)
-        db.add(Guest(prenom=prenom, nom=nom, telephone=tel, code=code))
+        db.add(Guest(prenom=prenom, nom=nom, telephone=tel, email=email_, code=code))
         added += 1
     db.commit()
     return RedirectResponse(f"/admin/dashboard?imported={added}", status_code=302)
@@ -388,10 +390,10 @@ def export_csv(db: Session = Depends(get_db)):
     guests = db.query(Guest).order_by(Guest.nom, Guest.prenom).all()
     output = io.StringIO()
     w = csv.writer(output)
-    w.writerow(["Prénom", "Nom", "Téléphone", "Code", "Réponse", "Accompagnants", "Régime", "Message", "Date réponse"])
+    w.writerow(["Prénom", "Nom", "Téléphone", "Email", "Code", "Réponse", "Accompagnants", "Régime", "Message", "Date réponse"])
     for g in guests:
         w.writerow([
-            g.prenom, g.nom, g.telephone or "", g.code,
+            g.prenom, g.nom, g.telephone or "", g.email or "", g.code,
             {"yes": "Confirmé", "no": "Décliné", "pending": "En attente"}.get(g.response, ""),
             g.plus_one if g.response == "yes" else "",
             g.regime or "",
